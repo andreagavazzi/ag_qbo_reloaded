@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import roslib
+import rospy
+import cv2
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+
+def init():
+    rospy.init_node('test_rs_subscriber')
+
+    # Create the window
+    cv2.namedWindow('OpenCV', 0)
+
+    """ Create the cv_bridge object """
+    global bridge
+    bridge = CvBridge()
+
+    """ Subscribe to the raw camera image topic """
+    image_sub = rospy.Subscriber("/camera/color/image_raw", Image, callback)
+
+
+def callback(data):
+    try:
+        """ Convert the raw image to OpenCV format """
+        cv_image = bridge.imgmsg_to_cv2(data, "bgr8")
+    except CvBridgeError, e:
+        print e
+    
+    """ Refresh the image on the screen """
+    cv2.imshow('OpenCV', cv_image)
+    cv2.waitKey(3)
+
+
+def main():
+      try:
+        rospy.spin()
+      except KeyboardInterrupt:
+        print "Shutting down vison node."
+      cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    init()
+    main()
