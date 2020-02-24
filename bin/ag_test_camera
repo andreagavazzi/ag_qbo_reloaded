@@ -35,13 +35,13 @@ def callback(data):
 
 
 def main():
-      try:
+    init()
+    try:
         rospy.spin()
-      except KeyboardInterrupt:
+    except KeyboardInterrupt:
         print "Shutting down vison node."
-      cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
-    init()
     main()
